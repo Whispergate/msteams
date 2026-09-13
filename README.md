@@ -72,7 +72,7 @@ Edit via the Mythic UI: C2 Profiles > msteams > View/Edit Config.
 
 ## Compatible Agents
 
-- **[Starburst](https://github.com/MythicAgents/starburst)** - Full support via WinInet-based MS Teams transport
+- **[Starburst](https://github.com/Whispergate/Starburst)** - Full support via WinInet-based MS Teams transport
 
 Any Mythic agent that implements the `msteams` C2 profile parameters can use this profile. The agent needs to:
 
