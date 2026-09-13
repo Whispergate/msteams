@@ -72,7 +72,7 @@ Edit via the Mythic UI: C2 Profiles > msteams > View/Edit Config.
 
 ## Compatible Agents
 
-- **[Starburst](https://github.com/Whispergate/Starburst)** - Full support via WinInet-based MS Teams transport
+- **[Starburst](https://github.com/Whispergate/Starburst)** - Full support via WinHTTP-based MS Teams transport
 
 Any Mythic agent that implements the `msteams` C2 profile parameters can use this profile. The agent needs to:
 
@@ -120,9 +120,10 @@ To test a real compiled agent against the mock, the agent binary needs to be bui
 #define LOGIN_HOST      "<mythic-host-ip>"
 #define API_PORT        8443
 
-// And remove INTERNET_FLAG_SECURE from wininet_request flags
+// And change WINHTTP_FLAG_SECURE to 0 in WinHttpOpenRequest
 // since the mock server uses plain HTTP:
-DWORD flags = INTERNET_FLAG_NO_CACHE_WRITE | INTERNET_FLAG_RELOAD;
+        WINHTTP_DEFAULT_ACCEPT_TYPES,
+        0
 ```
 
 Then reinstall Starburst, build a payload with the msteams profile (using the same fake tenant/client/team/channel IDs), and run it on a Windows VM that can reach the Mythic host.
@@ -133,7 +134,8 @@ Then reinstall Starburst, build a payload with the msteams profile (using the sa
 #define LOGIN_HOST      "login.microsoftonline.com"
 #define API_PORT        443
 
-DWORD flags = INTERNET_FLAG_SECURE | INTERNET_FLAG_NO_CACHE_WRITE | INTERNET_FLAG_RELOAD;
+        WINHTTP_DEFAULT_ACCEPT_TYPES,
+        WINHTTP_FLAG_SECURE
 ```
 
 ### Testing with the Fake Agent (No Compilation)
