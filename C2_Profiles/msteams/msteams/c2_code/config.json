@@ -1,0 +1,11 @@
+{
+  "tenant_id": "",
+  "client_id": "",
+  "client_secret": "",
+  "team_id": "",
+  "channel_id": "",
+  "webhook_url": "",
+  "poll_interval": 10,
+  "clear_messages": false,
+  "debug": false
+}
