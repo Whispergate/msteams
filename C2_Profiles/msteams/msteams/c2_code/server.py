@@ -9,13 +9,13 @@ import graph_client
 import mythic_client
 
 processed_ids = set()
+self_sent_ids = set()
 MAX_PROCESSED_CACHE = 5000
 
 
 def is_agent_message(msg):
-    sender = msg.get("from", {})
-    app = sender.get("application")
-    if app and app.get("id", "").lower() == config.get("client_id", "").lower():
+    msg_id = msg.get("id")
+    if msg_id in self_sent_ids:
         return False
     msg_type = msg.get("messageType", "")
     if msg_type != "message":
@@ -28,7 +28,7 @@ def is_agent_message(msg):
 
 
 async def process_messages():
-    global processed_ids
+    global processed_ids, self_sent_ids
     messages = await graph_client.get_channel_messages(top=50)
     if not messages:
         return
@@ -50,7 +50,11 @@ async def process_messages():
             logger.warning(f"No response from Mythic for message {msg_id}")
             continue
 
-        await graph_client.send_message(resp)
+        result = await graph_client.send_message(resp)
+        if result and isinstance(result, dict) and "id" in result:
+            self_sent_ids.add(result["id"])
+            if config.get("debug"):
+                logger.info(f"Tracked self-sent message {result['id']}")
 
         if config.get("clear_messages"):
             await graph_client.delete_message(msg_id)
@@ -59,6 +63,8 @@ async def process_messages():
 
     if len(processed_ids) > MAX_PROCESSED_CACHE:
         processed_ids = set(list(processed_ids)[-1000:])
+    if len(self_sent_ids) > MAX_PROCESSED_CACHE:
+        self_sent_ids = set(list(self_sent_ids)[-1000:])
 
 
 async def main():

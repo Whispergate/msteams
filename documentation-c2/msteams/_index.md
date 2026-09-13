@@ -29,11 +29,11 @@ Agent <---> Teams Channel <---> C2 Server <---> Mythic
 4. Mythic's response is posted back to the Teams channel
 5. The agent picks up the response on its next check-in
 
-## Azure AD Setup
+## Entra ID Setup
 
 ### 1. Create an App Registration
 
-1. Go to [Azure Portal](https://portal.azure.com) > **Azure Active Directory** > **App registrations**
+1. Go to [Azure Portal](https://portal.azure.com) > **Microsoft Entra ID** > **App registrations**
 2. Click **New registration**
 3. Name it anything (e.g. "Teams Integration")
 4. Set **Supported account types** to "Accounts in this organizational directory only"
@@ -77,7 +77,7 @@ Browse to **C2 Profiles** in Mythic, click the dropdown arrow next to **Start Pr
 
 | Parameter | Description |
 |-----------|-------------|
-| `tenant_id` | Azure AD Directory (tenant) ID |
+| `tenant_id` | Entra ID Directory (tenant) ID |
 | `client_id` | Application (client) ID from the app registration |
 | `client_secret` | Client secret value |
 | `team_id` | ID of the Teams team |
@@ -93,7 +93,7 @@ When building an agent payload, set these parameters:
 
 | Parameter | Description |
 |-----------|-------------|
-| `tenant_id` | Same Azure AD tenant ID |
+| `tenant_id` | Same Entra ID tenant ID |
 | `client_id` | Same or different app registration client ID for the agent |
 | `client_secret` | Corresponding client secret |
 | `team_id` | Same team ID |

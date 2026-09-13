@@ -5,6 +5,8 @@
   "team_id": "",
   "channel_id": "",
   "webhook_url": "",
+  "graph_base": "https://graph.microsoft.com/v1.0",
+  "login_base": "https://login.microsoftonline.com",
   "poll_interval": 10,
   "clear_messages": false,
   "debug": false

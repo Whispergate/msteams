@@ -4,8 +4,17 @@ import time
 from config import config
 from mythic_container.logging import logger
 
-GRAPH_BASE = "https://graph.microsoft.com/v1.0"
-LOGIN_BASE = "https://login.microsoftonline.com"
+GRAPH_BASE = None
+LOGIN_BASE = None
+
+
+def _get_base_urls():
+    global GRAPH_BASE, LOGIN_BASE
+    if GRAPH_BASE is None:
+        GRAPH_BASE = config.get("graph_base", "https://graph.microsoft.com/v1.0")
+    if LOGIN_BASE is None:
+        LOGIN_BASE = config.get("login_base", "https://login.microsoftonline.com")
+    return GRAPH_BASE, LOGIN_BASE
 
 _access_token = None
 _token_expiry = 0
@@ -27,7 +36,8 @@ async def _get_headers():
 
 async def _authenticate():
     global _access_token, _token_expiry
-    url = f"{LOGIN_BASE}/{config['tenant_id']}/oauth2/v2.0/token"
+    _, login_base = _get_base_urls()
+    url = f"{login_base}/{config['tenant_id']}/oauth2/v2.0/token"
     data = {
         "client_id": config["client_id"],
         "client_secret": config["client_secret"],
@@ -49,8 +59,9 @@ async def _authenticate():
 
 
 async def get_channel_messages(top=50):
+    graph_base, _ = _get_base_urls()
     url = (
-        f"{GRAPH_BASE}/teams/{config['team_id']}"
+        f"{graph_base}/teams/{config['team_id']}"
         f"/channels/{config['channel_id']}/messages?$top={top}"
     )
     headers = await _get_headers()
@@ -72,8 +83,9 @@ async def send_message(content):
 
 
 async def _send_via_graph(content):
+    graph_base, _ = _get_base_urls()
     url = (
-        f"{GRAPH_BASE}/teams/{config['team_id']}"
+        f"{graph_base}/teams/{config['team_id']}"
         f"/channels/{config['channel_id']}/messages"
     )
     headers = await _get_headers()
@@ -122,8 +134,9 @@ async def _send_via_webhook(content):
 
 
 async def reply_to_message(message_id, content):
+    graph_base, _ = _get_base_urls()
     url = (
-        f"{GRAPH_BASE}/teams/{config['team_id']}"
+        f"{graph_base}/teams/{config['team_id']}"
         f"/channels/{config['channel_id']}/messages/{message_id}/replies"
     )
     headers = await _get_headers()
@@ -141,8 +154,9 @@ async def reply_to_message(message_id, content):
 
 
 async def delete_message(message_id):
+    graph_base, _ = _get_base_urls()
     url = (
-        f"{GRAPH_BASE}/teams/{config['team_id']}"
+        f"{graph_base}/teams/{config['team_id']}"
         f"/channels/{config['channel_id']}/messages/{message_id}/softDelete"
     )
     headers = await _get_headers()
